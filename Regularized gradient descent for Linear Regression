@@ -1,0 +1,54 @@
+import numpy as np
+import copy
+def compute_cost_linear_reg(X, y, w, b, lambda_ = 1):
+    m  = X.shape[0]
+    n  = len(w)
+    cost = 0.
+    for i in range(m):
+        f_wb_i = np.dot(X[i], w) + b                                   #(n,)(n,)=scalar, see np.dot
+        cost = cost + (f_wb_i - y[i])**2                               #scalar             
+    cost = cost / (2 * m)                                              #scalar  
+ 
+    reg_cost = 0
+    for j in range(n):
+        reg_cost += (w[j]**2)                                          #scalar
+    reg_cost = (lambda_/(2*m)) * reg_cost                              #scalar
+    
+    total_cost = cost + reg_cost                                       #scalar
+    return total_cost                                                  #scalar
+def compute_gradient_linear_reg(X, y, w, b, lambda_): 
+    m,n = X.shape           #(number of examples, number of features)
+    dj_dw = np.zeros((n,))
+    dj_db = 0.
+
+    for i in range(m):                             
+        err = (np.dot(X[i], w) + b) - y[i]                 
+        for j in range(n):                         
+            dj_dw[j] = dj_dw[j] + err * X[i, j]               
+        dj_db = dj_db + err                        
+    dj_dw = dj_dw / m                                
+    dj_db = dj_db / m   
+    
+    for j in range(n):
+        dj_dw[j] = dj_dw[j] + (lambda_/m) * w[j]
+
+    return dj_db, dj_dw
+def gradient_descent(X, y, w_in, b_in, alpha, num_iters,lambda_):
+    w = copy.deepcopy(w_in)  # avoid modifying global w within function
+    b = b_in
+
+    for i in range(num_iters):
+        # Calculate the gradient and update the parameters
+        dj_db, dj_dw = compute_gradient_linear_reg(X, y, w, b, lambda_)
+
+        # Update Parameters using w, b, alpha and gradient
+        w = w - alpha * dj_dw
+        b = b - alpha * dj_db
+    return w, b
+X_tmp = np.random.rand(5,3)
+y_tmp = np.array([0,1,0,1,0])
+w_tmp = np.random.rand(X_tmp.shape[1])
+b_tmp = 0.5
+lambda_tmp = 0.7
+w,b=gradient_descent(X_tmp, y_tmp, w_tmp, b_tmp, 0.001, 10000,1)
+print(w,b)
