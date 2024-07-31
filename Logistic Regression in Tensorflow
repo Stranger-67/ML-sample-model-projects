@@ -1,0 +1,40 @@
+import numpy as np
+import tensorflow as tf
+model = Sequential(
+    [
+        tf.keras.layers.Dense(1, input_dim=1,  activation = 'sigmoid', name='L1')
+    ]
+)
+"""
+Sequential: This is a type of model in TensorFlow's Keras API. It allows you to build a neural network layer by layer in a sequential (linear) stack. 
+This means each layer has exactly one input tensor and one output tensor.
+The Sequential model is a simple way to stack layers in a neural network where each layer has one input tensor and one output tensor.
+Layers: The model has a single dense (fully connected) layer, defined using tf.keras.layers.Dense.
+->The layer has 1 neuron.
+->The input to this layer has 1 feature.
+->The activation function for the neuron is sigmoid, which outputs a value between 0 and 1.
+->The layer is named 'L1'.
+Dense Layer:
+1)Units: Dense(1, ...) means this layer has 1 neuron.
+2)Input Dimension: input_dim=1 specifies that the input to this layer has 1 feature. This is necessary for the first layer in a sequential model so it knows what input shape to expect.
+3)Activation: activation='sigmoid' specifies the activation function for this layer. The sigmoid activation function squashes the output to be between 0 and 1.
+4)Name: name='L1' assigns the name 'L1' to this layer, which can be useful for referencing the layer later.
+"""
+
+logistic_layer = model.get_layer('L1') 
+"""
+model.get_layer('L1') retrieves the layer named 'L1' from the model. In your case, 'L1' is the dense layer with one neuron that you defined earlier.
+logistic_layer now holds a reference to this layer.
+"""
+w,b = logistic_layer.get_weights() #returns the weights and biases of the layer.
+                                   #The weights w are the parameters that multiply the input.
+                                   #The biases b are the parameters that are added after the weighted input.
+print(w,b) #This line prints out the values of the weights and biases. Since the layer has not been trained yet, these values are usually initialized randomly.
+
+set_w = np.array([[2]])
+set_b = np.array([-4.5])
+# set_weights takes a list of numpy arrays
+logistic_layer.set_weights([set_w, set_b]) #parameters manually set to our model
+
+a1 = model.predict(np.array([2.6]).reshape(1,1)) # our model predicts the result from the data given. 
+print(a1) #if a1 is >0.5, then output is 1, else 0
