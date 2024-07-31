@@ -1,0 +1,21 @@
+import numpy as np
+import tensorflow as tf
+X_train = np.array([[1.0], [2.0]], dtype=np.float32)          
+Y_train = np.array([[300.0], [500.0]], dtype=np.float32)
+linear_layer = tf.keras.layers.Dense(units=1, activation = 'linear',) #his creates a dense (fully connected) layer in a neural network.
+                                                                      #units=1 means this layer has 1 neuron.
+                                                                      #activation='linear' means the layer will apply a linear activation function, 
+                                                                      #which simply means no activation function is applied (output is the same as input).
+
+set_w = np.array([[200]])
+set_b = np.array([100])
+
+#f X_train[0] = 1.0, a weight might be 2.0, and a bias might be 1.0. The output would be: 𝑦=(2.0∗1.0)+1.0=3.0
+.
+linear_layer.set_weights([set_w, set_b]) #sets the weights and bias of the linear_layer to these specified values.
+
+w, b= linear_layer.get_weights() #This line retrieves the weights and biases of the linear_layer.
+print(f"w = {w}, b={b}")
+prediction_tf = linear_layer(X_train) #fits our data into the model described under "linear_layer"
+
+print(prediction_tf) #we can see that the prediction matches well with our target values
