@@ -13,7 +13,7 @@ def my_dense(a_in, W, b):  #Computes dense layer
     units = W.shape[1]
     a_out = np.zeros(units)
     for j in range(units):               
-        w = W[:,j]                                    
+        w = W[:,j]    #accessing each column of W ( a column indicates the weights of a single neuron )                                
         z = np.dot(w, a_in) + b[j]         
         a_out[j] = g(z)               
     return(a_out)
