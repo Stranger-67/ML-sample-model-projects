@@ -1,0 +1,52 @@
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from sklearn.datasets import make_blobs
+
+def my_softmax(z):
+    ez = np.exp(z)              #element-wise exponenial
+    sm = ez/np.sum(ez)
+    return(sm)
+# where 'z' is a numpy array like np.array([1,2,3,4])
+
+#implementing softmax in tensorflow, the preferred way
+
+data = [[-5, 2], [-2, -2], [1, 2], [5, -2]]
+X_train, y_train = make_blobs(n_samples=2000, centers=data, cluster_std=1.0,random_state=30)
+#This line imports the make_blobs function from the sklearn.datasets module. The make_blobs function is used to generate isotropic Gaussian blobs for clustering.
+#The code generates a dataset with 2000 samples spread across four clusters centered at [-5, 2], [-2, -2], [1, 2], and [5, -2]. Each cluster has a standard deviation of 1.0. 
+#The generated dataset is stored in X_train (features) and y_train (labels). 
+#The random_state parameter ensures that the dataset is the same every time the code is run, which is useful for reproducibility in experiments.
+
+preferred_model = Sequential(
+    [ 
+        Dense(25, activation = 'relu'),
+        Dense(15, activation = 'relu'),
+        Dense(4, activation = 'linear')   #<-- Note
+    ]
+)
+preferred_model.compile(
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),  #<-- Note
+    optimizer=tf.keras.optimizers.Adam(0.001),
+)
+
+preferred_model.fit(
+    X_train,y_train,
+    epochs=10
+)
+sm_preferred = tf.nn.softmax(p_preferred).numpy()
+print(f"two example output vectors:\n {sm_preferred[:2]}")
+print("largest value", np.max(sm_preferred), "smallest value", np.min(sm_preferred))
+
+#To select the most likely category, the softmax is not required. One can find the index of the largest output using np.argmax().
+
+for i in range(5):
+    print( f"{p_preferred[i]}, category: {np.argmax(p_preferred[i])}")
+
+#Output:-
+#>>>[-3.74 -2.77  1.67 -2.41], category: 2
+#>>>[ 3.65 -0.9  -6.76 -7.9 ], category: 0
+#>>>[ 2.61 -0.3  -5.25 -6.32], category: 0
+#>>>[-2.31  3.03 -2.99 -2.9 ], category: 1
+#>>>[-3.45 -4.71  2.49 -5.96], category: 2
