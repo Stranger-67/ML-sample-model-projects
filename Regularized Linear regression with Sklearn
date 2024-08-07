@@ -1,0 +1,47 @@
+from sklearn.linear_model import LinearRegression, Ridge
+#Ridge Regression is a type of linear regression that includes an additional regularization term to the cost function.
+#This technique is used to prevent overfitting, which can happen when the model is too complex and fits the noise in the training data instead of the actual underlying relationship.
+#The regularization term in Ridge Regression is the sum of the squares of the coefficients, which is multiplied by a parameter '𝛼'
+
+#x_train, y_train, x_cv, y_cv, x_test, y_test are our training, cross validatio and test data sets
+
+reg_params = [10, 5, 2, 1, 0.5, 0.2, 0.1] #the '𝛼's for our regularization
+def train_plot_reg_params(reg_params, x_train, y_train, x_cv, y_cv, degree= 1, baseline=None):
+    
+    train_mses = []
+    cv_mses = []
+    models = []
+    scalers = []
+
+    # Loop over 10 times. Each adding one more degree of polynomial higher than the last.
+    for reg_param in reg_params:
+
+        # Add polynomial features to the training set
+        poly = PolynomialFeatures(degree, include_bias=False)
+        X_train_mapped = poly.fit_transform(x_train)
+
+        # Scale the training set
+        scaler_poly = StandardScaler()
+        X_train_mapped_scaled = scaler_poly.fit_transform(X_train_mapped)
+        scalers.append(scaler_poly)
+
+        # Create and train the model
+        model = Ridge(alpha=reg_param)
+        model.fit(X_train_mapped_scaled, y_train)
+        models.append(model)
+
+        # Compute the training MSE
+        yhat = model.predict(X_train_mapped_scaled)
+        train_mse = mean_squared_error(y_train, yhat) / 2
+        train_mses.append(train_mse)
+
+        # Add polynomial features and scale the cross-validation set
+        poly = PolynomialFeatures(degree, include_bias=False)
+        X_cv_mapped = poly.fit_transform(x_cv)
+        X_cv_mapped_scaled = scaler_poly.transform(X_cv_mapped)
+
+        # Compute the cross-validation MSE
+        yhat = model.predict(X_cv_mapped_scaled)
+        cv_mse = mean_squared_error(y_cv, yhat) / 2
+        cv_mses.append(cv_mse)
+train_plot_reg_params(reg_params, x_train, y_train, x_cv, y_cv, degree= 4)
