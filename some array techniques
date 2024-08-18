@@ -7,6 +7,11 @@ a =np.array([11,22,33,44,55,66])
 b=[0,3,5]
 print(sum(a[b])) #sums the elements of the array 'a' in the positions in list 'b'
 
+s =np.array([11,22,33,44,55,66])
+q=s[[0,3,4]]
+print(q)
+
 Output:-
 >>>[(0, [1, 0, 0]), (1, [0, 1, 1]), (2, [1, 0, 1])]
 >>>121
+>>>[11 44 55]
